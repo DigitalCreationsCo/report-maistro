@@ -1,0 +1,4 @@
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  script: |
+    gcloud run deploy cloudrunservice --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/report-maistro/report-maistro:${TAG} --region $REGION --platform managed --allow-unauthenticated

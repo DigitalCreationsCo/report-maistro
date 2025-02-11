@@ -1,7 +1,8 @@
 from langchain_anthropic import ChatAnthropic 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
-from langchain_openai import ChatOpenAI
+# from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from langgraph.constants import Send
 from langgraph.graph import START, END, StateGraph
@@ -12,7 +13,8 @@ from src.report_maistro.configuration import Configuration
 from src.report_maistro.utils import tavily_search_async, deduplicate_and_format_sources, format_sections
 
 # LLMs 
-planner_model = ChatOpenAI(model=Configuration.planner_model, reasoning_effort="medium") 
+# planner_model = ChatOpenAI(model=Configuration.planner_model, reasoning_effort="medium") 
+planner_model = ChatGoogleGenerativeAI(model="gemini-pro")
 writer_model = ChatAnthropic(model=Configuration.writer_model, temperature=0) 
 
 # Nodes
