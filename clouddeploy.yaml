@@ -1,4 +1,26 @@
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
-  script: |
-    gcloud run deploy cloudrunservice --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/report-maistro/report-maistro:${TAG} --region $REGION --platform managed --allow-unauthenticated
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      # Compute the image value from the provided substitutions.
+      echo "Deploying Cloud Run service with image: $_IMAGE"
+      gcloud run deploy cloudrunservice \
+      --image="$_IMAGE" \
+      --region="$_REGION" \
+      --platform=managed \
+      --port=8000 \
+      --allow-unauthenticated \
+      --set-env-vars="DB_HOST=$_DB_HOST,DB_PORT=$_DB_PORT,DB_NAME=$_DB_NAME,DB_USER=$_DB_USER,DB_PASSWORD=$_DB_PASSWORD,REDIS_HOST=$_REDIS_HOST,REDIS_PORT=$_REDIS_PORT"
+
+substitutions:
+  _REGION: "us-central1"
+  _IMAGE: "us-central1-docker.pkg.dev/report-maistro/report-maistro/report-maistro:latest"
+  _DB_HOST: ""  # Will be set during deployment
+  _DB_PORT: "5432"
+  _DB_NAME: "reportmaistro"
+  _DB_USER: ""  # Will be set during deployment
+  _DB_PASSWORD: ""  # Will be set during deployment
+  _REDIS_HOST: ""  # Will be set during deployment
+  _REDIS_PORT: "6379"

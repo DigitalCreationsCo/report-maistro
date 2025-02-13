@@ -2,18 +2,20 @@ provider "google" {
   project = var.project_id
   region  = var.region
   zone    = var.zone
+
+  credentials="../service-account.json"
 }
 
 resource "google_compute_network" "vpc_network" {
   name                    = var.vpc_network_name
   auto_create_subnetworks  = false  # Ensure manual subnet creation
+}
 
-  subnets {
-    name          = "my-subnet"
-    ip_cidr_range = var.subnet_ip_range  # Reference the variable from tfvars
-    region        = var.region
-    private_ip_google_access = true  # Enable private Google access
-  }
+resource "google_compute_subnetwork" "subnet" {
+  name          = "${var.vpc_network_name}-subnet"
+  ip_cidr_range = var.subnet_ip_range  # Reference the variable from tfvars
+  network       = google_compute_network.vpc_network.id
+  region        = var.region
 }
 
 resource "google_sql_database_instance" "postgresql_instance" {
@@ -25,13 +27,15 @@ resource "google_sql_database_instance" "postgresql_instance" {
   settings {
     ip_configuration {
       ipv4_enabled    = false
-      private_network = google_compute_network.vpc_network.self_link  # Referencing VPC name
+      private_network = google_compute_network.vpc_network.self_link
     }
   }
+
+  deletion_protection = false  # Set to true for production
 }
 
 resource "google_sql_database" "postgresql_db" {
-  name     = "my_database"
+  name     = "reportmaistro"
   instance = google_sql_database_instance.postgresql_instance.name
 }
 
@@ -44,11 +48,13 @@ resource "google_sql_user" "postgresql_user" {
 resource "google_redis_instance" "redis_instance" {
   name     = var.redis_instance_name
   region   = var.region
+  location_id   = var.zone
+
   tier     = "STANDARD_HA"
   memory_size_gb = 1
 
   redis_version = "REDIS_6_X"
-  network       = google_compute_network.vpc_network.self_link  # Referencing VPC name
+  authorized_network = google_compute_network.vpc_network.id
 }
 
 resource "google_cloud_run_service" "app" {
@@ -92,7 +98,7 @@ resource "google_cloud_run_service" "app" {
   }
 }
 
-resource "google_cloud_build_trigger" "app_build_trigger" {
+resource "google_cloudbuild_trigger" "app_build_trigger" {
   name = "cloud-run-app-build"
   github {
     owner = "your-github-username"
@@ -101,6 +107,7 @@ resource "google_cloud_build_trigger" "app_build_trigger" {
       branch = "main"
     }
   }
+  
   build {
     steps {
       name = "gcr.io/cloud-builders/docker"
@@ -132,5 +139,5 @@ resource "google_compute_firewall" "allow_redis" {
     protocol = "tcp"
     ports    = ["6379"]
   }
-  source_ranges = [var.subnet_ip_range]  # Reference the subnet range variable
+  source_ranges = [var.subnet_ip_range] 
 }
