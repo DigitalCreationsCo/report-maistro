@@ -3,12 +3,12 @@ provider "google" {
   region  = var.region
   zone    = var.zone
 
-  credentials="../service-account.json"
+  credentials="./service-account.json"
 }
 
 resource "google_compute_network" "vpc_network" {
   name                    = var.vpc_network_name
-  auto_create_subnetworks  = false  # Ensure manual subnet creation
+  auto_create_subnetworks = false  # Ensure manual subnet creation
 }
 
 resource "google_compute_subnetwork" "subnet" {
@@ -18,19 +18,27 @@ resource "google_compute_subnetwork" "subnet" {
   region        = var.region
 }
 
+
+resource "google_service_networking_connection" "private_vpc_connection" {
+  network                 = "projects/${var.project_id}/global/networks/${var.vpc_network_name}"
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [var.subnet_ip_range]
+}
+
+
 resource "google_sql_database_instance" "postgresql_instance" {
-  name             = var.postgresql_instance_name
+  name             = "postgresql-instance"
+  database_version = "POSTGRES_12"
   region           = var.region
-  database_version = "POSTGRES_13"
-  tier             = "db-f1-micro"
 
   settings {
+    tier = "db-f1-micro"
+
     ip_configuration {
       ipv4_enabled    = false
-      private_network = google_compute_network.vpc_network.self_link
+      private_network = "projects/${var.project_id}/global/networks/${var.vpc_network_name}"
     }
   }
-
   deletion_protection = false  # Set to true for production
 }
 
@@ -101,24 +109,24 @@ resource "google_cloud_run_service" "app" {
 resource "google_cloudbuild_trigger" "app_build_trigger" {
   name = "cloud-run-app-build"
   github {
-    owner = "your-github-username"
-    name  = "your-repo-name"
+    owner = "digitalcreationsco"
+    name  = "report-maistro"
     push {
       branch = "main"
     }
   }
-  
+
   build {
-    steps {
+    step {
       name = "gcr.io/cloud-builders/docker"
       args = [
         "build",
         "-t",
-        "gcr.io/${var.project_id}/${var.docker_image}",
+        "${var.docker_image}",
         "."
       ]
     }
-    images = ["gcr.io/${var.project_id}/${var.docker_image}"]
+    images = ["${var.docker_image}"]
   }
 }
 

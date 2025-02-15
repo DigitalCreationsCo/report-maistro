@@ -13,7 +13,6 @@ steps:
       --port=8000 \
       --allow-unauthenticated \
       --set-env-vars="DB_HOST=$_DB_HOST,DB_PORT=$_DB_PORT,DB_NAME=$_DB_NAME,DB_USER=$_DB_USER,DB_PASSWORD=$_DB_PASSWORD,REDIS_HOST=$_REDIS_HOST,REDIS_PORT=$_REDIS_PORT"
-
 substitutions:
   _REGION: "us-central1"
   _IMAGE: "us-central1-docker.pkg.dev/report-maistro/report-maistro/report-maistro:latest"
