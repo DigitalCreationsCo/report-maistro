@@ -1,5 +1,6 @@
 .env
 service-account*
 .venv
+.terraform/
 .terraform*
 terraform.*
