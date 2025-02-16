@@ -115,11 +115,24 @@ resource "google_cloud_run_service" "app" {
       containers {
         image = var.container_image
         
-        health_check {
+        startup_probe {
           initial_delay_seconds = 30
           timeout_seconds = 10
-          period_seconds = 5
+          period_seconds = 15
           failure_threshold = 3
+          tcp_socket {
+            port = 8000
+          }
+        }
+
+        liveness_probe {
+          initial_delay_seconds = 50
+          timeout_seconds = 10
+          period_seconds = 15
+          failure_threshold = 3
+          http_get {
+            port = 8000
+          }
         }
 
         ports  {
