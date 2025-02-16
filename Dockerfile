@@ -28,4 +28,4 @@ ENV PORT=8000
 EXPOSE 8000
 
 # Ensure the container runs the application correctly
-# CMD ["uvicorn", "src.report_maistro.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["langgraph", "dev"]

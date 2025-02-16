@@ -158,6 +158,14 @@ resource "google_cloud_run_service" "app" {
         }
       }
     }
+
+    metadata {
+      annotations = {
+        "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.name
+        "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.postgresql.connection_name
+        "run.googleapis.com/client-name"        = "terraform"
+      }
+    }
   }
 
   traffic {

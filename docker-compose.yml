@@ -9,6 +9,7 @@ services:
             interval: 5s
             timeout: 1s
             retries: 5
+
     langgraph-postgres:
         image: postgres:16
         ports:
@@ -25,6 +26,7 @@ services:
             timeout: 1s
             retries: 5
             interval: 5s
+            
     langgraph-api:
         image: report-maistro
         ports:
