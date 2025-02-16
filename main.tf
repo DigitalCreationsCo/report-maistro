@@ -7,8 +7,8 @@ terraform {
   }
 }
 
-module "python_app" {
-  source = "./modules/gcp-python-app"
+module "gcp_python" {
+  source = "./modules/gcp_python"
 
   project_id            = var.project_id
   region               = var.region
