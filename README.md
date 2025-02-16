@@ -1,52 +1,70 @@
 # Report mAIstro
 
-Report mAIstro is an open-source research assistant that generates comprehensive reports on any topic, following a workflow similar to Google's [Gemini Deep Research](https://blog.google/products/gemini/google-gemini-deep-research/). It combines planning, parallel web research, and structured writing with human oversight.
+Report mAIstro is an open-source research assistant designed to generate high-quality reports on any topic using an AI-driven **plan-and-execute** workflow. Inspired by Google's [Gemini Deep Research](https://blog.google/products/gemini/google-gemini-deep-research/), it enables structured, parallelized research while incorporating human oversight.  
 
-Key features:
-- Uses OpenAI o-series reasoning model (default) for intelligent report planning
-- Enables human review and iteration of the research plan
-- Parallelizes web research across multiple report sections, using Claude-3.5-Sonnet for report writing
-- Produces well-formatted markdown reports
-- Supports customizable models, prompts, and report structure
+## 🌟 Key Features  
 
-Short summary:
-<video src="https://github.com/user-attachments/assets/d9a66221-59cf-4c71-916d-33fdf3457fe8" controls></video>
+- **Intelligent Planning with Google Gemini-Pro**: Uses `gemini-pro` for advanced reasoning, report structuring, and topic decomposition.  
+- **Parallel Web Research**: Leverages the [Tavily API](https://tavily.com/) for real-time web searches across report sections.  
+- **Customizable Research Structure**: Users can modify report layouts, add feedback, and iterate through different report plans.  
+- **LLM-Powered Writing with Claude 3.5 Sonnet**: Synthesizes research findings into well-structured markdown reports.  
+- **Human-in-the-Loop Review**: Users can approve, modify, or refine report sections before finalization.  
+- **LangSmith Studio Integration**: Provides a UI for real-time feedback, iteration, and API observability.  
 
-## 🚀 Quickstart
+## 📌 Use Case  
 
-Clone the repository:
+Report mAIstro is built for researchers, analysts, and writers who need comprehensive, structured reports on any subject. Whether it's market research, academic papers, or investigative journalism, the AI automates research gathering and report composition, significantly reducing manual effort.
+
+- **Business Strategy Reports**: Analyzes competitive landscapes, industry trends, and case studies.  
+- **Scientific & Technical Research**: Collects relevant publications, synthesizes findings, and structures arguments.  
+- **Comparative Analysis**: Builds structured comparison tables with AI-driven insights.  
+- **Financial & Policy Reports**: Aggregates news, market trends, and regulatory updates.  
+
+---
+
+## 🚀 Quickstart  
+
+Clone the repository:  
+
 ```bash
 git clone https://github.com/langchain-ai/report_maistro.git
 cd report_maistro
 ```
 
-Set API keys for Anthropic (default writer), OpenAI (default planner), and [Tavily](https://tavily.com) for free web search up to 1000 requests):
+### 🔑 Set Up API Keys  
+
+Report mAIstro requires API keys for:  
+- **Anthropic** (default writer - Claude 3.5 Sonnet)  
+- **Google Gemini-Pro** (default planner - reasoning and structuring)  
+- **Tavily API** (real-time web search)  
+
+Copy the environment template and update your `.env` file:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit the `.env` file with your API keys:
+Edit the `.env` file and provide your API keys:
 
 ```bash
 export TAVILY_API_KEY=<your_tavily_api_key>
 export ANTHROPIC_API_KEY=<your_anthropic_api_key>
-export OPENAI_API_KEY=<your_openai_api_key>
+export GOOGLE_API_KEY=<your_google_gemini_api_key>
 ```
 
-Launch the assistant with the LangGraph server, which will open in your browser:
+### ⚡ Start the Assistant  
 
-#### Mac
+#### Mac/Linux  
 
 ```bash
 # Install uv package manager
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install dependencies and start the LangGraph server
+# Install dependencies and start LangGraph server
 uvx --refresh --from "langgraph-cli[inmem]" --with-editable . --python 3.11 langgraph dev
 ```
 
-#### Windows
+#### Windows  
 
 ```powershell
 # Install dependencies 
@@ -57,67 +75,105 @@ pip install langgraph-cli[inmem]
 langgraph dev
 ```
 
-Use this to open the Studio UI:
+### 🎨 Access LangSmith Studio  
+
 ```
 - 🚀 API: http://127.0.0.1:2024
 - 🎨 Studio UI: https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024
 - 📚 API Docs: http://127.0.0.1:2024/docs
 ```
 
-(1) Provide a `Topic` and hit `Submit`:
+---
 
-![Screenshot 2025-01-31 at 8 12 21 PM](https://github.com/user-attachments/assets/70ce93d8-c29f-49ea-9e06-19377d8cac7b)
+## 🔎 How It Works  
 
-(2) This will generate a report plan:
+### 1️⃣ Planning Phase (Gemini-Pro)  
 
-![Screenshot 2025-01-31 at 8 12 44 PM](https://github.com/user-attachments/assets/a464e71c-e122-422f-9736-62f8bf0b8777)
+- **Analyzes Topic**: Uses **Gemini-Pro** to break down the topic into well-structured report sections.  
+- **Human Review**: Users can **approve, modify, or provide feedback** before research begins.  
 
-(3) You can review the section of the plan in Studio. If you like them, hit `Continue`.
+### 2️⃣ Research Phase (Tavily API)  
 
-(4) If you want to add feedback, add `Feedback On Report Plan` and `Submit`:
+- **Parallel Web Research**: Searches across multiple sections simultaneously.  
+- **Extracts and Filters Data**: Uses advanced filtering to ensure high-quality sources.  
 
-![Screenshot 2025-01-31 at 8 13 40 PM](https://github.com/user-attachments/assets/d82102f3-0adb-4eca-ae96-2fe720b22b71)
+### 3️⃣ Writing Phase (Claude 3.5 Sonnet)  
 
-(5) If you have given feedback, continue iterating until you are happy and then select `Accept Report Plan`:
+- **Synthesizes Findings**: Converts research data into structured, well-formatted content.  
+- **Maintains Context Awareness**: Ensures logical flow between sections.  
+- **Optimized for Markdown**: Ready for direct publishing or further editing.  
 
-![Screenshot 2025-01-31 at 8 14 19 PM](https://github.com/user-attachments/assets/1d693e16-79df-4823-8355-482999546922)
+---
 
-## 📖 Customizing the report
+## 🛠 Customizing Reports  
 
-Optionally, provide a description of the report structure you want as a configuration. You can further tune this during the feedback phase. While a topic alone can generate reports, we found that providing a structure significantly improves quality. For example, business strategy reports might need case studies, while comparative analyses benefit from structured comparison tables. The natural language structure acts as a flexible template, guiding the AI to create more focused and relevant reports.
+You can customize reports by providing a structured outline in natural language. This improves report focus and relevance.  
 
-> See [some example report types here](report_examples/)!
+### Example Structures  
 
-## Motivation 
+| Report Type       | Suggested Structure |
+|------------------|------------------|
+| **Market Analysis**  | Introduction → Industry Overview → Competitive Landscape → Key Players → Market Trends → Conclusion |
+| **Scientific Report** | Abstract → Background Research → Methodology → Results → Discussion → References |
+| **Comparative Report** | Introduction → Feature 1 Comparison → Feature 2 Comparison → Strengths & Weaknesses → Final Verdict |
 
-Automating research and report writing is a common need. [Deep Research](https://blog.google/products/gemini/google-gemini-deep-research/) from Google is a great example of this. This open source project mirror the flow of Deep Research, but allow you to customize the models, prompts, and research report structure.
+> See [example reports](report_examples/) for more templates.  
 
-## How it works
-   
-1. `Plan and Execute` - Report mAIstro follows a [plan-and-execute workflow](https://github.com/assafelovic/gpt-researcher) that separates planning from research, allowing for better resource management, human-in-the-loop approval, and significantly reducing overall report creation time:
+---
 
-   - **Planning Phase**: An LLM analyzes the user's `topic` and `structure` using a planning prompt to create the report sections first. 
-   - **Research Phase**: The system parallelizes web research across all sections requiring external data:
-     - Uses [Tavily API](https://tavily.com/) for targeted web searches
-     - Processes multiple sections simultaneously for faster report generation
-     - Synthesizes gathered information into coherent section content
-   
-2. `Sequential Writing` - The report generation follows a logical sequence:
-   - First, completes all research-dependent sections in parallel
-   - Then generates connecting sections like introductions and conclusions
-   - Uses insights from research sections to create cohesive narratives
-   - Maintains contextual awareness across all sections
-   
-   While this sequence can be customized via the `structure`, the default flow ensures that conclusions meaningfully incorporate research findings.
+## 📡 Integration with LangSmith Studio  
 
-3. `Managing different types` - Report mAIstro is built on LangGraph, which has native support for configuration management [using assistants](https://langchain-ai.github.io/langgraph/concepts/assistants/). The report `structure` is a field in the graph configuration, which allows users to create different assistants for different types of reports. 
+Report mAIstro is built using **LangGraph**, allowing full integration with **LangSmith Studio** for API observability, logging, and human feedback.  
 
-## UX
+### Features:  
+- **Real-time Execution Visualization**: Track LLM calls, reasoning steps, and research queries.  
+- **Iterative Feedback**: Modify report structures, refine research, and guide AI-generated content.  
+- **Performance Monitoring**: View token usage, API response times, and prompt success rates.  
 
-### Local deployment
+### Using LangSmith Studio  
 
-Follow the [quickstart](#quickstart) to run the assistant locally.
+1️⃣ **Submit a Topic**  
 
-### Hosted deployment
- 
-You can easily deploy to [LangGraph Platform ](https://langchain-ai.github.io/langgraph/concepts/#deployment-options). 
+![Topic Submission](https://github.com/user-attachments/assets/70ce93d8-c29f-49ea-9e06-19377d8cac7b)  
+
+2️⃣ **Receive a Report Plan**  
+
+![Report Plan](https://github.com/user-attachments/assets/a464e71c-e122-422f-9736-62f8bf0b8777)  
+
+3️⃣ **Provide Feedback & Iterate**  
+
+![Feedback Iteration](https://github.com/user-attachments/assets/d82102f3-0adb-4eca-ae96-2fe720b22b71)  
+
+4️⃣ **Approve & Generate Final Report**  
+
+![Final Report](https://github.com/user-attachments/assets/1d693e16-79df-4823-8355-482999546922)  
+
+---
+
+## 📌 Deployment Options  
+
+### 1️⃣ Local Deployment  
+
+Follow the [quickstart](#quickstart) guide.  
+
+### 2️⃣ Hosted Deployment (LangGraph Platform)  
+
+Easily deploy to the **LangGraph Platform** for a cloud-based solution. See [LangGraph Docs](https://langchain-ai.github.io/langgraph/concepts/#deployment-options).  
+
+---
+
+## 🎯 Motivation  
+
+Google's **Deep Research** project highlights the power of AI-assisted research. Report mAIstro builds on these concepts while **allowing customization of models, prompts, and report structures**, providing an open-source, adaptable alternative.  
+
+🔹 **Why Use Report mAIstro?**  
+✅ Automates structured research and writing  
+✅ Human oversight for high-quality results  
+✅ Fully customizable with different models & prompts  
+✅ Integrated with LangSmith Studio for real-time iteration  
+
+---
+
+## 📜 License  
+
+MIT License - See [LICENSE](LICENSE) for details.  
