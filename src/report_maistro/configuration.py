@@ -27,8 +27,10 @@ class Configuration:
     number_of_queries: int = 2 
     tavily_topic: str = "general"
     tavily_days: str = None
-    planner_model: str = "o3-mini"
+    planner_model: str = "gemini-pro"
+    google_api_key: str = "Google Api Key"
     writer_model: str = "claude-3-5-sonnet-latest"
+    anthropic_api_key: str = "Anthropic Api Key"
 
     @classmethod
     def from_runnable_config(
